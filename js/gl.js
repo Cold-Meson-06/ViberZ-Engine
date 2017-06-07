@@ -72,4 +72,36 @@ const Shaders = {
         getShaderType: str => /gl_Position/.test(str) ? 'VERTEX_SHADER' : 'FRAGMENT_SHADER',
         shaderTypeToEnum: type => gl[type]
     },
+    GetES3Data(input){
+        let data = {uniforms:{}, inputs:{}, functions:{}, structs:{}, constants:{}}
+        let buff = input.match(/in.*;|uniform.*int.*|void.*|float.*/)
+        if(buff.lenght){
+            buff.map(item => {
+                let [systemArg, constType, varName] = item.split(' ')
+                varName = varName.slice(0, varName.length - 1)
+                shaderData[systemArg].push({name, type})
+            })
+        }
+        shaderData.isVertex = /gl_Position/.test(input)
+    },
+    GetES2Data(){
+    
+    },
 }
+
+
+    const getE2ShaderData = (str) => {
+        let shaderData = { uniform: {}, attribute: {} }
+        let data = str.match(/attribute.*;|uniform.*;/g)
+        data && data.map(item => {
+            let [type1, type2, name] = item.split(' ')
+            name = name.slice(0, name.length - 1)
+            shaderData[type1][name] = {}
+            shaderData[type1][name].location = name
+            shaderData[type1][name].type = type2
+        })
+        shaderData.isFragmentShader = /gl_FragColor/.test(str)
+        shaderData.isVertexShader = /gl_Position/.test(str)
+        return shaderData
+    }
+    
